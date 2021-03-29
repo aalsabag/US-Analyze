@@ -8,22 +8,24 @@ def main():
 
   arguments = parser.parse_args()
 
-  print(arguments.video)
-  #regular_search(sequence_of_interest)
-  
   if arguments.camera_mode:
+    print("enabling camera mode")
     vcapture = cv2.VideoCapture(0) 
-    while True:
-      ret, frame = vcapture.read()
-      if ret == True:
-        grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        edge = cv2.Canny(grayscale, 75, 125)
-        cv2.imshow('Edge frame', edge)
-        if cv2.waitKey(20) == ord('q'):
-          break
+  elif arguments.video:
+    print("enabling video capture mode")
+    vcapture = cv2.VideoCapture(arguments.video) 
+
+  while True:
+    ret, frame = vcapture.read()
+    if ret == True:
+      grayscale = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+      edge = cv2.Canny(grayscale, 75, 125, apertureSize=3, L2gradient=True)
+      cv2.imshow('Edge frame', edge)
+      if cv2.waitKey(20) == ord('q'):
+        break
     
-    vcapture.release()
-    cv2.destroyAllWindows()
+  vcapture.release()
+  cv2.destroyAllWindows()
 
 if __name__ == '__main__':
     main()
